@@ -19,14 +19,6 @@ jobs:
         with:
             go-version: 1.19
 
-      - name: Download
-        working-directory: ./cmd
-        run: go mod download
-
-      - name: Build
-        working-directory: ./cmd
-        run: go build .
-
       - name: Vet
         working-directory: ./cmd
         run: go vet ./...
@@ -38,5 +30,5 @@ jobs:
       - name: Docker Hub
         run: |
           docker login -u ${{ secrets.DOCKER_HUB_USER }} -p "${{ secrets.DOCKER_HUB_PASSWORD }}"
-          docker build -t masoudkarimif/docker-lambda-deploy .
-          docker push masoudkarimif/docker-lambda-deploy:latest
+          docker build -t ${{ secrets.DOCKER_HUB_USER }}/docker-lambda-deploy .
+          docker push ${{ secrets.DOCKER_HUB_USER }}/docker-lambda-deploy:latest
