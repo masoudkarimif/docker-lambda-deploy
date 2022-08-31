@@ -2,13 +2,14 @@ name: build
 
 on:
   push:
+    branches:
+      - main
     paths-ignore:
       - '**.md'
 
 jobs:
   run:
     runs-on: ubuntu-latest
-
     steps:
       - name: GitHub checkout
         uses: actions/checkout@v2
@@ -36,7 +37,6 @@ jobs:
 
       - name: Docker Hub
         run: |
-          cd ..
           docker login -u ${{ secrets.DOCKER_HUB_USER }} -p "${{ secrets.DOCKER_HUB_PASSWORD }}"
           docker build -t masoudkarimif/docker-lambda-deploy .
           docker push masoudkarimif/docker-lambda-deploy:latest
