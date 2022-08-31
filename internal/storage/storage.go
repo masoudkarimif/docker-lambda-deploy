@@ -39,5 +39,7 @@ func (s *Storage) UpdateCode(ctx context.Context) error {
 		return nil
 	}
 
+	log.Printf("successfully wrote zip file to s3://%s/%s\n", s.BucketName, s.Key)
+
 	return nil
 }

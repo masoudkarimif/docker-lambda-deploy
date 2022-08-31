@@ -84,5 +84,5 @@ func getAwsConfig(ctx context.Context) (aws.Config, error) {
 }
 
 func keysPresent() bool {
-	return len(os.Getenv("INPUT_ACCESS_KEY")) > 0 && len(os.Getenv("INPUT_SECRET_KEY")) > 0
+	return len(os.Getenv("INPUT_AWS_ACCESS_KEY_ID")) > 0 && len(os.Getenv("INPUT_AWS_SECRET_ACCESS_KEY")) > 0
 }

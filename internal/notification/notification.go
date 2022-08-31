@@ -58,16 +58,23 @@ func (n *Notification) sendSlackMsg(ctx context.Context, status, color string) e
 		return nil
 	}
 
-	commitShortenedHash := os.Getenv("GITHUB_SHA")[:7]
-	repo := os.Getenv("GITHUB_REPOSITORY")
-	gitHubServerURL := os.Getenv("GITHUB_SERVER_URL")
+	var fields []Field
+	var commitShortenedHash, repo, gitHubServerURL, footer string
 
-	fields := []Field{
-		{
+	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
+		commitShortenedHash = os.Getenv("GITHUB_SHA")[:7]
+		repo = os.Getenv("GITHUB_REPOSITORY")
+		gitHubServerURL = os.Getenv("GITHUB_SERVER_URL")
+
+		fields = append(fields, Field{
 			Title: "Commit",
 			Value: fmt.Sprintf("<%s/%s/commit/%s|%s>", gitHubServerURL, repo, os.Getenv("GITHUB_SHA"), commitShortenedHash),
 			Short: true,
-		},
+		})
+
+		footer = fmt.Sprintf("<%s/%s|%s>", gitHubServerURL, repo, repo)
+	} else {
+		footer = ""
 	}
 
 	if env, ok := os.LookupEnv("INPUT_ENV"); ok {
@@ -89,7 +96,7 @@ func (n *Notification) sendSlackMsg(ctx context.Context, status, color string) e
 			{
 				Color:      color,
 				AuthorName: fmt.Sprintf("Lambda Pipeline (%s)", os.Getenv("INPUT_FUNCTION_NAME")),
-				Footer:     fmt.Sprintf("<%s/%s|%s>", gitHubServerURL, repo, repo),
+				Footer:     footer,
 				Fields:     fields,
 			},
 		},
