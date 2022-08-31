@@ -41,15 +41,15 @@ func main() {
 	}
 
 	s := &storage.Storage{
-		BucketName: os.Getenv("INPUT_BUCKET"),
-		Key:        os.Getenv("INPUT_KEY"),
+		BucketName: os.Getenv("INPUT_S3_BUCKET"),
+		Key:        os.Getenv("INPUT_S3_KEY"),
 		CodePath:   os.Getenv("INPUT_CODE_PATH"),
 	}
 	s.Initialize(cfg)
 
 	f := &function.Function{
-		BucketName: os.Getenv("INPUT_BUCKET"),
-		Key:        os.Getenv("INPUT_KEY"),
+		BucketName: os.Getenv("INPUT_S3_BUCKET"),
+		Key:        os.Getenv("INPUT_S3_KEY"),
 		Name:       os.Getenv("INPUT_FUNCTION_NAME"),
 	}
 	f.Initialize(cfg)
