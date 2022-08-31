@@ -22,7 +22,7 @@ func (s *Storage) Initialize(cfg aws.Config) {
 }
 
 func (s *Storage) UpdateCode(ctx context.Context) error {
-	log.Printf("opening %s\n", s.CodePath)
+	log.Printf("trying to open %s\n", s.CodePath)
 
 	dat, err := os.ReadFile(s.CodePath)
 	if err != nil {
