@@ -2,6 +2,7 @@ package function
 
 import (
 	"context"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
@@ -26,6 +27,8 @@ func (f *Function) UpdateCode(ctx context.Context) error {
 	}); err != nil {
 		return err
 	}
+
+	log.Printf("successfully updated lambda function %s\n", f.Name)
 
 	return nil
 }
