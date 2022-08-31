@@ -31,12 +31,12 @@ func main() {
 	}
 
 	if err := n.SendInProgressMsg(ctx); err != nil {
-		log.Println("sending slack failed, %s", err.Error())
+		log.Printf("sending slack failed, %s", err.Error())
 	}
 
 	cfg, err := getAwsConfig(ctx)
 	if err != nil {
-		log.Println("get config failed, %s", err.Error())
+		log.Printf("get config failed, %s", err.Error())
 		os.Exit(1)
 	}
 
@@ -58,13 +58,13 @@ func main() {
 	if err := a.Run(ctx, f, s); err != nil {
 		fmt.Fprintf(os.Stdout, "run exited, %s\n", err)
 		if err := n.SendFailedMsg(ctx); err != nil {
-			log.Println("sending slack failed, %s", err.Error())
+			log.Printf("sending slack failed, %s", err.Error())
 		}
 		os.Exit(1)
 	}
 
 	if err := n.SendSucceededMsg(ctx); err != nil {
-		log.Println("sending slack failed, %s", err.Error())
+		log.Printf("sending slack failed, %s", err.Error())
 	}
 }
 
