@@ -3,6 +3,7 @@ package storage
 import (
 	"bytes"
 	"context"
+	"log"
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -21,6 +22,8 @@ func (s *Storage) Initialize(cfg aws.Config) {
 }
 
 func (s *Storage) UpdateCode(ctx context.Context) error {
+	log.Printf("opening %s\n", s.CodePath)
+
 	dat, err := os.ReadFile(s.CodePath)
 	if err != nil {
 		return err
