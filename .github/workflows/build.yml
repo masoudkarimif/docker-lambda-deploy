@@ -1,0 +1,39 @@
+name: build
+
+on:
+  push:
+    paths-ignore:
+        - '**.md'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    working-directory: ./cmd
+
+    steps:
+      - name: GitHub checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+            go-version: 1.19
+
+      - name: Download
+        run: go mod download
+
+      - name: Build
+        run: go build .
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -v ./...
+
+      - name: Docker Hub
+        run: |
+          cd ..
+          docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
+          docker build -t masoudkarimif/docker-lambda-deploy
+          docker push masoudkarimif/docker-lambda-deploy:latest
