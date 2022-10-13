@@ -26,6 +26,7 @@ func (s *Storage) UpdateCode(ctx context.Context) error {
 	filePath := s.CodePath
 	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
 		filePath = fmt.Sprintf("/github/workspace/%s", filePath)
+	}
 
 	log.Printf("trying to open file %s\n", filePath)
 
