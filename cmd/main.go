@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -47,10 +48,20 @@ func main() {
 	}
 	s.Initialize(cfg)
 
+	fnName := os.Getenv("INPUT_FUNCTION_NAME")
+	if len(fnName) == 0 {
+		fnNameByte, err := s.ReadFile(".function_name")
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+
+		fnName = strings.TrimSpace(string(fnNameByte))
+	}
+
 	f := &function.Function{
 		BucketName: os.Getenv("INPUT_S3_BUCKET"),
 		Key:        os.Getenv("INPUT_S3_KEY"),
-		Name:       os.Getenv("INPUT_FUNCTION_NAME"),
+		Name:       fnName,
 	}
 	f.Initialize(cfg)
 

@@ -23,14 +23,7 @@ func (s *Storage) Initialize(cfg aws.Config) {
 }
 
 func (s *Storage) UpdateCode(ctx context.Context) error {
-	filePath := s.CodePath
-	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
-		filePath = fmt.Sprintf("/github/workspace/%s", filePath)
-	}
-
-	log.Printf("trying to open file %s\n", filePath)
-
-	dat, err := os.ReadFile(filePath)
+	dat, err := s.ReadFile(s.CodePath)
 	if err != nil {
 		return err
 	}
@@ -48,4 +41,19 @@ func (s *Storage) UpdateCode(ctx context.Context) error {
 	log.Printf("successfully wrote zip file to s3://%s/%s\n", s.BucketName, s.Key)
 
 	return nil
+}
+
+func (*Storage) ReadFile(filePath string) ([]byte, error) {
+	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
+		filePath = fmt.Sprintf("/github/workspace/%s", filePath)
+	}
+
+	log.Printf("trying to open file %s\n", filePath)
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
