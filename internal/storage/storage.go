@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 
@@ -23,6 +24,10 @@ func (s *Storage) Initialize(cfg aws.Config) {
 }
 
 func (s *Storage) UpdateCode(ctx context.Context) error {
+	listContents("/github/workspace")
+	listContents("/github/home")
+	listContents("/github/workflow")
+
 	filePath := s.CodePath
 	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
 		filePath = fmt.Sprintf("/github/workspace/%s", filePath)
@@ -48,4 +53,16 @@ func (s *Storage) UpdateCode(ctx context.Context) error {
 	log.Printf("successfully wrote zip file to s3://%s/%s\n", s.BucketName, s.Key)
 
 	return nil
+}
+
+func listContents(path string) {
+	log.Printf("listing contents for path %s\n", path)
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		fmt.Println(file.Name(), file.IsDir())
+	}
 }
