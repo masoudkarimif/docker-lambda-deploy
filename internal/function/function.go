@@ -21,15 +21,17 @@ func (f *Function) Initialize(cfg aws.Config) {
 }
 
 func (f *Function) UpdateCode(ctx context.Context) error {
-	if _, err := f.client.UpdateFunctionCode(ctx, &lambda.UpdateFunctionCodeInput{
-		FunctionName: aws.String(f.Name),
-		S3Bucket:     aws.String(f.BucketName),
-		S3Key:        aws.String(f.Key),
-	}); err != nil {
-		return err
+	functionList := listFunctionNames(f.Name)
+	for _, functionName := range functionList {
+		if _, err := f.client.UpdateFunctionCode(ctx, &lambda.UpdateFunctionCodeInput{
+			FunctionName: aws.String(functionName),
+			S3Bucket:     aws.String(f.BucketName),
+			S3Key:        aws.String(f.Key),
+		}); err != nil {
+			return err
+		}
+		log.Printf("successfully updated lambda function %s\n", f.Name)
 	}
-
-	log.Printf("successfully updated lambda function %s\n", f.Name)
 
 	return nil
 }
