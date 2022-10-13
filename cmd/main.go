@@ -27,14 +27,6 @@ func (cred) Retrieve(ctx context.Context) (aws.Credentials, error) {
 func main() {
 	ctx := context.Background()
 
-	n := &notification.Notification{
-		Hook: os.Getenv("INPUT_SLACK_HOOK"),
-	}
-
-	if err := n.SendInProgressMsg(ctx); err != nil {
-		log.Printf("sending slack failed, %s", err.Error())
-	}
-
 	cfg, err := getAwsConfig(ctx)
 	if err != nil {
 		log.Printf("get config failed, %s", err.Error())
@@ -48,20 +40,29 @@ func main() {
 	}
 	s.Initialize(cfg)
 
-	fnName := os.Getenv("INPUT_FUNCTION_NAME")
-	if len(fnName) == 0 {
+	// resolve function name
+	if fnName, ok := os.LookupEnv("INPUT_FUNCTION_NAME"); !ok || len(fnName) == 0 {
 		fnNameByte, err := s.ReadFile(".function_name")
 		if err != nil {
 			log.Fatal(err.Error())
 		}
 
 		fnName = strings.TrimSpace(string(fnNameByte))
+		os.Setenv("INPUT_FUNCTION_NAME", fnName)
+	}
+
+	n := &notification.Notification{
+		Hook: os.Getenv("INPUT_SLACK_HOOK"),
+	}
+
+	if err := n.SendInProgressMsg(ctx); err != nil {
+		log.Printf("sending slack failed, %s", err.Error())
 	}
 
 	f := &function.Function{
 		BucketName: os.Getenv("INPUT_S3_BUCKET"),
 		Key:        os.Getenv("INPUT_S3_KEY"),
-		Name:       fnName,
+		Name:       os.Getenv("INPUT_FUNCTION_NAME"),
 	}
 	f.Initialize(cfg)
 
