@@ -3,6 +3,8 @@ package storage
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -62,8 +64,21 @@ func getFileFullPath(filePath string) string {
 	}
 
 	workingDirectory := os.Getenv("INPUT_WORKING_DIRECTORY")
-
+	listFilesInDirectory(path.Join(filePrefix, workingDirectory))
 	fullPath := path.Join(filePrefix, workingDirectory, filePath)
 
 	return fullPath
+}
+
+func listFilesInDirectory(directoryPath string) {
+	log.Printf("Listing files in directory %s\n", directoryPath)
+	files, err := ioutil.ReadDir(directoryPath)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	for _, file := range files {
+		fmt.Println(file.Name(), file.IsDir())
+	}
 }
