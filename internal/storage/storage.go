@@ -49,7 +49,7 @@ func (*Storage) ReadFile(filePath string) ([]byte, error) {
 	fullPath := getFileFullPath(filePath)
 	log.Printf("trying to open file %s\n", fullPath)
 
-	data, err := os.ReadFile(filePath)
+	data, err := os.ReadFile(fullPath)
 	if err != nil {
 		return nil, err
 	}
