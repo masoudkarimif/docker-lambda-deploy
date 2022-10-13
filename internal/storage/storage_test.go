@@ -10,11 +10,8 @@ import (
 func TestGetFullPath(t *testing.T) {
 	filePath := "artifact.zip"
 
-	fullPath := getFileFullPath(filePath)
-	assert.Equal(t, fullPath, "artifact.zip")
-
 	os.Setenv("GITHUB_SHA", "xxxxx")
-	fullPath = getFileFullPath(filePath)
+	fullPath := getFileFullPath(filePath)
 	assert.Equal(t, fullPath, "/github/workspace/artifact.zip")
 
 	os.Setenv("INPUT_WORKING_DIRECTORY", "home")
@@ -42,6 +39,9 @@ func TestGetFullPath(t *testing.T) {
 	assert.Equal(t, fullPath, "artifact.zip")
 
 	os.Setenv("INPUT_WORKING_DIRECTORY", ".")
+	fullPath = getFileFullPath(filePath)
+	assert.Equal(t, fullPath, "artifact.zip")
+
 	fullPath = getFileFullPath(filePath)
 	assert.Equal(t, fullPath, "artifact.zip")
 }
