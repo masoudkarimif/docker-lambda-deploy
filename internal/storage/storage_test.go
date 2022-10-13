@@ -36,4 +36,12 @@ func TestGetFullPath(t *testing.T) {
 	os.Unsetenv("GITHUB_SHA")
 	fullPath = getFileFullPath(filePath)
 	assert.Equal(t, fullPath, "home/artifact.zip")
+
+	os.Setenv("INPUT_WORKING_DIRECTORY", "./")
+	fullPath = getFileFullPath(filePath)
+	assert.Equal(t, fullPath, "artifact.zip")
+
+	os.Setenv("INPUT_WORKING_DIRECTORY", ".")
+	fullPath = getFileFullPath(filePath)
+	assert.Equal(t, fullPath, "artifact.zip")
 }
