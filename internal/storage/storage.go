@@ -3,9 +3,9 @@ package storage
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"log"
 	"os"
+	"path"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -44,11 +44,8 @@ func (s *Storage) UpdateCode(ctx context.Context) error {
 }
 
 func (*Storage) ReadFile(filePath string) ([]byte, error) {
-	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
-		filePath = fmt.Sprintf("/github/workspace/%s", filePath)
-	}
-
-	log.Printf("trying to open file %s\n", filePath)
+	fullPath := getFileFullPath(filePath)
+	log.Printf("trying to open file %s\n", fullPath)
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -56,4 +53,17 @@ func (*Storage) ReadFile(filePath string) ([]byte, error) {
 	}
 
 	return data, nil
+}
+
+func getFileFullPath(filePath string) string {
+	var filePrefix string
+	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
+		filePrefix = "/github/workspace/"
+	}
+
+	workingDirectory := os.Getenv("INPUT_WORKING_DIRECTORY")
+
+	fullPath := path.Join(filePrefix, workingDirectory, filePath)
+
+	return fullPath
 }
