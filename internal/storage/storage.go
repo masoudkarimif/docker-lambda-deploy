@@ -56,7 +56,8 @@ func (s *Storage) UpdateCode(ctx context.Context) error {
 }
 
 func listContents(path string) {
-	log.Printf("listing contents for path %s\n", path)
+	fmt.Printf("listing contents for path %s\n", path)
+
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
