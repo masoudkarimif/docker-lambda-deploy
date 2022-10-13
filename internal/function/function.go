@@ -3,6 +3,7 @@ package function
 import (
 	"context"
 	"log"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
@@ -31,4 +32,18 @@ func (f *Function) UpdateCode(ctx context.Context) error {
 	log.Printf("successfully updated lambda function %s\n", f.Name)
 
 	return nil
+}
+
+func listFunctionNames(functionNames string) []string {
+	names := strings.Split(functionNames, ",")
+	var cleanedNames []string
+
+	for _, name := range names {
+		cleanedName := strings.TrimSpace(name)
+		if len(cleanedName) > 0 {
+			cleanedNames = append(cleanedNames, strings.TrimSpace(name))
+		}
+	}
+
+	return cleanedNames
 }
