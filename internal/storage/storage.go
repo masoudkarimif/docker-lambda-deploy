@@ -3,6 +3,7 @@ package storage
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -22,9 +23,13 @@ func (s *Storage) Initialize(cfg aws.Config) {
 }
 
 func (s *Storage) UpdateCode(ctx context.Context) error {
-	log.Printf("trying to open file %s\n", s.CodePath)
+	filePath := s.CodePath
+	if _, ok := os.LookupEnv("GITHUB_SHA"); ok {
+		filePath = fmt.Sprintf("/github/workspace/%s", filePath)
 
-	dat, err := os.ReadFile(s.CodePath)
+	log.Printf("trying to open file %s\n", filePath)
+
+	dat, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
