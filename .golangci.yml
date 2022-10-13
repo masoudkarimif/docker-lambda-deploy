@@ -1,0 +1,23 @@
+run:
+  timeout: 5m
+
+linters:
+  disable-all: true
+  enable:
+    - ineffassign
+    - staticcheck
+    - stylecheck
+    - unused
+    - gofmt
+
+linters-settings: 
+  staticcheck:
+    checks: [
+      "all",
+      "-SA1019", 
+      "-SA2002"
+    ]
+  stylecheck:
+    checks: [
+      "ST1019",  
+    ]
